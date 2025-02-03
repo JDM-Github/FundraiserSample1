@@ -5,5 +5,6 @@
 </head>
 <body>
     @yield('content')
+    {{-- WALA LANG, TEST LANG FOR LAYOUT --}}
 </body>
 </html>
