@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Route;
 
 // RESOURCES
 Route::resource('news', NewsController::class);
+Route::get('/news/{news:slug}', [NewsController::class, 'show'])->name('news.show');
 
 
 Route::middleware('guest')->group(function () {
+    Route::get('/', [AuthController::class, 'login'])->name('login');
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
@@ -17,11 +19,14 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 });
 
+
 // FOR USERS
 Route::middleware('auth')->group(function () {
-    
+
     // GLOBAL ROUTE FOR ALL ROLE
+    Route::get('/', [HomeController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+
 
     // FUNDRAISER ROLE
     Route::middleware('role:fundraiser')->group(function () {

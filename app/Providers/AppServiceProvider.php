@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
-use Blade;
+use App\Repositories\UsersRepository;
+use App\Services\UsersService;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\NewsRepository;
+use App\Services\NewsService;
+use Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +16,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(NewsRepository::class, function ($app) {
+            return new NewsRepository();
+        });
+        
+        $this->app->bind(NewsService::class, function ($app) {
+            return new NewsService($app->make(NewsRepository::class));
+        });
+
+
+        $this->app->bind(UsersRepository::class, function ($app) {
+            return new UsersRepository();
+        });
+
+        $this->app->bind(UsersService::class, function ($app) {
+            return new UsersService($app->make(UsersRepository::class));
+        });
     }
 
     /**
@@ -20,15 +39,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::directive('else', function () {
-            return "<?php else: ?>";
-        });
-
         // ADMIN
         Blade::directive('admin', function () {
             return "<?php if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('super_admin'))): ?>";
         });
-
         Blade::directive('endadmin', function () {
             return "<?php endif; ?>";
         });
@@ -37,7 +51,6 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('adminonly', function () {
             return "<?php if(auth()->check() && (auth()->user()->hasRole('admin'))): ?>";
         });
-
         Blade::directive('endadminonly', function () {
             return "<?php endif; ?>";
         });
@@ -46,11 +59,9 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('superadmin', function () {
             return "<?php if(auth()->check() && auth()->user()->hasRole('super_admin')): ?>";
         });
-
         Blade::directive('endsuperadmin', function () {
             return "<?php endif; ?>";
         });
-
 
 
         // FUNDRAISER

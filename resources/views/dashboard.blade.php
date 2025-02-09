@@ -2,52 +2,29 @@
 
 @section('content')
 
-    @fundraiser
-        <h1>Fundraiser Dashboard</h1>
-    @endfundraiser
+    @include('layout.header')
 
-    @adminonly
-        <h1>Admin Dashboard</h1>
-    @endadminonly
+    <h2 style="text-align: center; color: #d9534f;">All News</h2>
 
-    @superadmin
-        <h1>Super Admin Dashboard</h1>
-    @endsuperadmin
-
-    <h2>All News</h2>
     @admin
-        <a href="{{ route('news.create') }}">ADD NEWS</a>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a href="{{ route('news.create') }}" 
+                style="background-color: #d9534f; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                ADD NEWS
+            </a>
+        </div>
     @endadmin
 
-    <h1 style="text-align: center; font-size: 24px; color: #d9534f;">News List</h1>
+    @include('news.list', ['news' => $news])
+    <div style="text-align: center; margin-top: 20px;">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" 
+                style="background-color: #d9534f; color: white; padding: 10px 15px; border-radius: 5px; font-size: 16px; cursor: pointer;">
+                Logout
+            </button>
+        </form>
+    </div>
 
-    <ul style="list-style-type: none; padding-left: 0;">
-        @foreach ($news as $item)
-            <li style="padding: 10px 0; border-bottom: 1px solid #ddd;">
-                <a href="{{ route('news.show', $item->id) }}"
-                    style="font-size: 18px; color: #333; text-decoration: none; font-weight: bold;">
-                    {{ $item->title }}
-                </a>
-
-                @superadmin
-                    <span style="margin-left: 15px;">
-                        <a href="{{ route('news.edit', $item->id) }}" style="color: #d9534f; text-decoration: none;">Edit</a>
-                    </span>
-                    <form action="{{ route('news.destroy', $item->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            style="background-color: #d9534f; color: white; border: none; padding: 5px 10px; font-size: 14px; border-radius: 4px; cursor: pointer;">
-                            Delete
-                        </button>
-                    </form>
-                @endsuperadmin
-            </li>
-        @endforeach
-    </ul>
-
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit">Logout</button>
-    </form>
 @endsection
+@include('footer')

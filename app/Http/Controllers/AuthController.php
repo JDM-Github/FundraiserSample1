@@ -1,47 +1,52 @@
 <?php
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Services\UsersService;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    protected $usersService;
+    public function __construct(UsersService $usersService)
+    {
+        $this->usersService = $usersService;
+    }
+
+
+    // ---------------------------------------------------------------------------------
+    // GET
+    // ---------------------------------------------------------------------------------
     public function showRegister()
     {
         return view('auth.register');
     }
-
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed'
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role
-        ]);
-        $user->assignRole($request->role);
-
-        return redirect()->route('login')->with('success', 'Registration successful. Please login.');
-    }
-
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    public function login(Request $request)
+
+
+
+
+    // ---------------------------------------------------------------------------------
+    // POST
+    // ---------------------------------------------------------------------------------
+    public function register(RegisterRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        try {
+            $this->usersService->register($request->validated());
+            return redirect()->route('login')->with('success', 'Registration successful. Please login.');
+        } catch (\Exception $e) {
+            \Log::error('Registration Error: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Registration Error: ' . $e->getMessage()]);
+        }
+    }
+
+    public function login(LoginRequest $request)
+    {
+        $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
             return redirect()->route('dashboard');

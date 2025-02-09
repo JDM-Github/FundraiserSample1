@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-    <div style="max-width: 400px; margin: 50px auto; padding: 30px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <div style="max-width: 400px; margin: 50px auto; padding: 10px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         <h1 style="text-align: center; font-size: 24px; color: #d9534f; margin-bottom: 20px;">Login</h1>
         
         <form action="{{ route('login.post') }}" method="POST">
@@ -30,3 +30,4 @@
         </div>
     </div>
 @endsection
+@include('footer')

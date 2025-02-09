@@ -4,26 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\News;
 use Illuminate\Http\Request;
+use App\Services\NewsService;
 
 class NewsController extends Controller
 {
-    public function index()
+    protected $newsService;
+
+    public function __construct(NewsService $newsService)
     {
-        $news = News::all();
-        return view('news.index', compact('news'));
+        $this->newsService = $newsService;
     }
 
+    // ---------------------------------------------------------------------------------
+    // GET
+    // ---------------------------------------------------------------------------------
     public function create()
     {
         return view('news.create');
     }
-
-    public function store(Request $request)
-    {
-        News::create($request->post());
-        return redirect()->route('dashboard');
-    }
-
     public function show(News $news)
     {
         return view('news.show', compact('news'));
@@ -34,15 +32,27 @@ class NewsController extends Controller
         return view('news.edit', compact('news'));
     }
 
-    public function update(Request $request, News $news)
+
+
+
+    // ---------------------------------------------------------------------------------
+    // POST
+    // ---------------------------------------------------------------------------------
+    public function store(Request $request)
     {
-        $news->update($request->post());
+        $this->newsService->createNews($request->all());
+        return redirect()->route('dashboard');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->newsService->updateNews($id, $request->all());
         return redirect()->route('dashboard');
     }
 
     public function destroy(News $news)
     {
-        News::destroy($news->id);
+        $this->newsService->destroyNews($news->id);
         return redirect()->route('dashboard');
     }
 }

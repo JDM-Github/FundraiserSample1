@@ -1,18 +1,18 @@
 @extends('layout')
 
 @section('content')
-    <div style="max-width: 400px; margin: 50px auto; padding: 30px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <div style="max-width: 400px; margin: 50px auto; padding: 10px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         <h1 style="text-align: center; font-size: 24px; color: #d9534f; margin-bottom: 20px;">Register</h1>
         
         <form action="{{ route('register.post') }}" method="POST">
             @csrf
-            
+
             <div style="margin-bottom: 15px;">
                 <label for="name" style="font-size: 14px; color: #333;">Full Name</label>
                 <input type="text" name="name" required placeholder="Enter your full name" 
                     style="width: 100%; padding: 10px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px;">
             </div>
-            
+
             <div style="margin-bottom: 15px;">
                 <label for="email" style="font-size: 14px; color: #333;">Email Address</label>
                 <input type="email" name="email" required placeholder="Enter your email" 
@@ -51,4 +51,6 @@
             Already have an account? <a href="{{ route('login') }}" style="font-size: 14px; color: #d9534f;">Login here</a>
         </div>
     </div>
+
 @endsection
+@include('footer')
